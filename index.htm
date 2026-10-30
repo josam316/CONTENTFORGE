@@ -1,0 +1,596 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d18">
+<title>CONTENTFORGE | JOSAM316</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+:root {
+  --bg:#080d18;
+  --sidebar:#0b1220;
+  --panel:#101a2b;
+  --panel2:#152239;
+  --border:#24334b;
+  --text:#edf4ff;
+  --muted:#8b9bb3;
+  --blue:#43baff;
+  --purple:#9b83ff;
+  --green:#35d6a1;
+  --danger:#ff7070;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh}
+.sidebar{width:250px;background:var(--sidebar);border-right:1px solid var(--border);position:fixed;inset:0 auto 0 0;padding:24px 15px;display:flex;flex-direction:column;z-index:20;transition:.25s}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px 35px}
+.brand-icon{width:42px;height:42px;display:grid;place-items:center;background:linear-gradient(135deg,#278cff,#9167ff);border-radius:13px}
+.brand h2{font-size:14px;letter-spacing:.5px}
+.brand h2 span{color:var(--blue)}
+.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:2px;margin-top:5px}
+.workspace{font-size:10px;letter-spacing:1.5px;color:#64758e;padding:0 12px 13px;font-weight:700}
+nav{display:grid;gap:7px}
+.nav{display:flex;align-items:center;gap:12px;background:transparent;color:var(--muted);border:1px solid transparent;border-radius:10px;padding:13px 12px;text-align:left;font-size:12px}
+.nav:hover,.nav.active{background:#172a43;border-color:#294666;color:white}
+.nav.active svg{color:var(--blue)}
+.nav svg{width:18px}
+.sidebar-bottom{margin-top:auto;border-top:1px solid var(--border);padding-top:14px}
+.user{display:flex;align-items:center;gap:10px}
+.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#267dff,#8759eb);font-weight:800}
+.user strong{font-size:12px}
+.user small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.main{margin-left:250px;min-height:100vh}
+.topbar{height:68px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;background:#080d18ed;backdrop-filter:blur(15px);z-index:10}
+.breadcrumb{color:var(--muted);font-size:12px}
+.breadcrumb span{color:white}
+.top-actions{display:flex;align-items:center;gap:12px}
+.icon-btn,.menu-btn{display:grid;place-items:center;width:36px;height:36px;background:var(--panel);border:1px solid var(--border);border-radius:9px;color:#b5c4d9}
+.menu-btn,.close-btn{display:none}
+.container{padding:32px;max-width:1500px;margin:auto}
+.page{display:none;animation:fade .2s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:clamp(25px,4vw,34px);letter-spacing:-1px}
+h2{font-size:17px}
+h3{font-size:14px}
+p{line-height:1.6}
+.eyebrow{font-size:10px;letter-spacing:2px;color:var(--blue);font-weight:700;margin-bottom:12px}
+.heading{margin-bottom:28px}
+.heading p,.welcome p{color:var(--muted);font-size:12px;margin-top:8px}
+.welcome{display:flex;justify-content:space-between;align-items:center;gap:15px}
+.welcome h1 span{color:var(--blue)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(110deg,#278cff,#7565fa);color:white;border:0;border-radius:9px;padding:12px 16px;font-size:12px;font-weight:700}
+.btn:hover{filter:brightness(1.15)}
+.btn svg{width:16px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:30px 0}
+.stat,.panel,.quick,.data-card{background:linear-gradient(145deg,var(--panel),#0e1726);border:1px solid var(--border);border-radius:14px}
+.stat{padding:19px}
+.stat-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;margin-bottom:15px}
+.stat-icon svg{width:19px}
+.blue{background:#153d60;color:#56bdff}
+.purple{background:#30255d;color:#b49cff}
+.green{background:#164b3d;color:#4ee4b2}
+.orange{background:#54351e;color:#ffb46c}
+.stat span{font-size:11px;color:var(--muted)}
+.stat h2{font-size:26px;margin:7px 0}
+.stat small{font-size:10px;color:#65758b}
+.section-heading{display:flex;justify-content:space-between;align-items:center;margin:30px 0 16px}
+.section-heading p{color:var(--muted);font-size:11px;margin-top:6px}
+.quick-grid,.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.quick{text-align:left;color:white;padding:20px;transition:.2s}
+.quick:hover,.data-card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.quick svg{color:var(--blue);width:23px;margin-bottom:18px}
+.quick strong,.quick span{display:block}
+.quick strong{font-size:12px;margin-bottom:8px}
+.quick span{font-size:11px;color:var(--muted);line-height:1.6}
+.panel{padding:22px}
+.panel h3{margin-bottom:20px;display:flex;align-items:center;gap:9px}
+.panel h3 svg{color:var(--blue);width:18px}
+.studio{display:grid;grid-template-columns:minmax(270px,.85fr) minmax(300px,1.15fr);gap:17px}
+label{display:block;font-size:11px;color:#aabbd1;margin:16px 0 8px}
+input,textarea,select{width:100%;background:#0a1321;color:white;border:1px solid var(--border);border-radius:9px;padding:12px;outline:none;font-size:12px}
+input:focus,textarea:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #43baff13}
+textarea{resize:vertical;line-height:1.7}
+select option{background:#101a2b}
+.full{width:100%;margin-top:18px}
+.hint{font-size:10px;color:var(--muted);margin-top:12px}
+.output-panel{display:flex;flex-direction:column;min-height:510px}
+.output-head{display:flex;justify-content:space-between;align-items:center}
+.output-panel textarea{flex:1;min-height:360px;margin-top:17px}
+.output-footer{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;padding-top:12px}
+.search{max-width:450px;margin-bottom:20px}
+.list{display:grid;gap:12px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px}
+.item h4,.data-card h4{font-size:13px;margin-bottom:7px}
+.item p,.data-card p{color:var(--muted);font-size:11px;line-height:1.6}
+.actions,.card-actions{display:flex;gap:7px;flex-wrap:wrap}
+.small{background:#192941;border:1px solid var(--border);color:#c7d7ec;padding:8px 10px;border-radius:7px;font-size:10px}
+.small:hover{border-color:var(--blue)}
+.danger:hover{color:var(--danger);border-color:var(--danger)}
+.data-card{padding:18px;min-width:0}
+.card-actions{margin-top:15px}
+.form-panel{max-width:650px;margin-bottom:20px}
+.form-panel .btn{margin-top:17px}
+.create-row{display:flex;gap:10px;margin-bottom:20px}
+.empty{border:1px dashed #34445b;border-radius:12px;color:var(--muted);padding:32px;text-align:center;font-size:12px}
+.text-btn{border:0;background:transparent;color:var(--blue);font-size:11px}
+.toast{position:fixed;bottom:22px;right:22px;background:#1a3048;border:1px solid #31516e;padding:13px 18px;border-radius:10px;color:white;font-size:12px;opacity:0;transform:translateY(10px);transition:.2s;pointer-events:none;z-index:50}
+.toast.show{opacity:1;transform:translateY(0)}
+.auth-box{max-width:420px;margin:70px auto;padding:25px;background:var(--panel);border:1px solid var(--border);border-radius:16px}
+.auth-box h2{margin-bottom:10px}
+.auth-box p{color:var(--muted);font-size:12px;margin-bottom:15px}
+.auth-box .btn{width:100%;margin-top:15px}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}.quick-grid,.cards-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){
+.sidebar{transform:translateX(-100%);box-shadow:20px 0 50px #0008}
+.sidebar.open{transform:translateX(0)}
+.close-btn{display:block;margin-left:auto;background:transparent;color:white;border:0;font-size:24px}
+.main{margin-left:0}
+.menu-btn{display:grid}
+.topbar{padding:0 16px}
+.container{padding:23px 16px}
+.welcome{align-items:flex-start;flex-direction:column}
+.studio{grid-template-columns:1fr}
+.output-panel{min-height:420px}
+}
+@media(max-width:480px){
+.stats,.quick-grid,.cards-grid{grid-template-columns:1fr}
+.create-row,.item{flex-direction:column;align-items:stretch}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <div class="brand-icon"><i data-lucide="sparkles"></i></div>
+    <div><h2>CONTENT<span style="color:#43baff">FORGE</span></h2><small>BY JOSAM316</small></div>
+    <button class="close-btn" onclick="toggleSidebar()">×</button>
+  </div>
+
+  <div class="workspace">WORKSPACE</div>
+  <nav>
+    <button class="nav active" data-page="dashboard"><i data-lucide="layout-dashboard"></i>Dashboard</button>
+    <button class="nav" data-page="studio"><i data-lucide="wand-sparkles"></i>AI Studio</button>
+    <button class="nav" data-page="library"><i data-lucide="library"></i>Content Library</button>
+    <button class="nav" data-page="projects"><i data-lucide="folder"></i>Projects</button>
+    <button class="nav" data-page="voices"><i data-lucide="audio-lines"></i>Brand Voices</button>
+    <button class="nav" data-page="planner"><i data-lucide="calendar-days"></i>Planner</button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="user">
+      <div class="avatar">J</div>
+      <div><strong id="userName">Josam</strong><small id="userEmail">Local workspace</small></div>
+    </div>
+    <button class="small" style="width:100%;margin-top:12px" onclick="showAuth()">Account / Login</button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="menu-btn" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+    <div class="breadcrumb">Workspace / <span id="pageName">Dashboard</span></div>
+  </div>
+  <div class="top-actions">
+    <button class="icon-btn" onclick="toast('You are all caught up!')"><i data-lucide="bell"></i></button>
+    <div class="avatar">J</div>
+  </div>
+</header>
+
+<div class="container">
+
+<section class="page active" id="dashboard">
+  <div class="welcome">
+    <div><div class="eyebrow">YOUR CREATIVE WORKSPACE</div><h1>Welcome back, Josam <span>?</span></h1><p>Create smarter. Build faster. Publish better.</p></div>
+    <button class="btn" onclick="navigate('studio')"><i data-lucide="plus"></i>Create content</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-icon blue"><i data-lucide="file-text"></i></div><span>Total content</span><h2 id="totalContent">0</h2><small>Saved creations</small></div>
+    <div class="stat"><div class="stat-icon purple"><i data-lucide="folder"></i></div><span>Projects</span><h2 id="totalProjects">0</h2><small>Creative workspaces</small></div>
+    <div class="stat"><div class="stat-icon green"><i data-lucide="mic"></i></div><span>Brand voices</span><h2 id="totalVoices">0</h2><small>Writing styles</small></div>
+    <div class="stat"><div class="stat-icon orange"><i data-lucide="calendar"></i></div><span>Scheduled</span><h2 id="totalScheduled">0</h2><small>Planned content</small></div>
+  </div>
+
+  <div class="section-heading"><div><h2>Quick actions</h2><p>Choose what you want to create.</p></div></div>
+  <div class="quick-grid">
+    <button class="quick" onclick="navigate('studio')"><i data-lucide="wand-sparkles"></i><strong>AI Content Generator</strong><span>Generate posts, articles and scripts.</span></button>
+    <button class="quick" onclick="navigate('projects')"><i data-lucide="folder-plus"></i><strong>New Project</strong><span>Organize your creative work.</span></button>
+    <button class="quick" onclick="navigate('voices')"><i data-lucide="audio-lines"></i><strong>Brand Voice</strong><span>Build your unique writing style.</span></button>
+  </div>
+
+  <div class="section-heading"><div><h2>Recent creations</h2><p>Your latest saved content.</p></div><button class="text-btn" onclick="navigate('library')">View all</button></div>
+  <div class="list" id="recentContent"></div>
+</section>
+
+<section class="page" id="studio">
+  <div class="heading"><div class="eyebrow">YOUR AI CREATIVE ENGINE</div><h1>AI Studio</h1><p>Turn your ideas into powerful content.</p></div>
+  <div class="studio">
+    <div class="panel">
+      <h3><i data-lucide="sliders-horizontal"></i> Generation settings</h3>
+      <label>Content type</label>
+      <select id="contentType"><option>Social Media Post</option><option>Blog Article</option><option>Marketing Copy</option><option>Business Proposal</option><option>Video Script</option><option>Product Description</option><option>Email</option><option>Creative Story</option></select>
+      <label>Platform</label>
+      <select id="platform"><option>General</option><option>Instagram</option><option>Facebook</option><option>TikTok</option><option>YouTube</option><option>LinkedIn</option><option>Website</option></select>
+      <label>Writing tone</label>
+      <select id="tone"><option>Professional</option><option>Friendly</option><option>Creative</option><option>Persuasive</option><option>Educational</option><option>Casual</option></select>
+      <label>Topic or instructions</label>
+      <textarea id="prompt" rows="7" placeholder="Describe what you want to create..."></textarea>
+      <button class="btn full" id="generateBtn" onclick="generateContent()"><i data-lucide="sparkles"></i>Generate content</button>
+      <p class="hint">AI generation will be connected using a secure service. Do not put private API keys in this file.</p>
+    </div>
+    <div class="panel output-panel">
+      <div class="output-head"><h3>Generated result</h3><div class="actions"><button class="icon-btn" onclick="copyOutput()"><i data-lucide="copy"></i></button><button class="icon-btn" onclick="saveContent()"><i data-lucide="save"></i></button></div></div>
+      <textarea id="output" placeholder="Your generated content will appear here..."></textarea>
+      <div class="output-footer"><span id="wordCount">0 words</span><span id="generationStatus">Ready</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="library">
+  <div class="heading"><h1>Content Library</h1><p>Manage and organize your creations.</p></div>
+  <input class="search" id="librarySearch" placeholder="Search your content..." oninput="renderLibrary()">
+  <div class="list" id="libraryContent"></div>
+</section>
+
+<section class="page" id="projects">
+  <div class="heading"><h1>Projects</h1><p>Organize your creative work.</p></div>
+  <div class="create-row"><input id="projectName" placeholder="Enter project name"><button class="btn" onclick="addProject()">Add project</button></div>
+  <div class="cards-grid" id="projectsGrid"></div>
+</section>
+
+<section class="page" id="voices">
+  <div class="heading"><h1>Brand Voices</h1><p>Define how your content should sound.</p></div>
+  <div class="panel form-panel">
+    <label>Voice name</label><input id="voiceName" placeholder="e.g. Josam Professional">
+    <label>Description and writing instructions</label><textarea id="voiceDescription" rows="4" placeholder="Describe your writing style..."></textarea>
+    <label>Default tone</label><select id="voiceTone"><option>Professional</option><option>Friendly</option><option>Creative</option><option>Persuasive</option><option>Educational</option></select>
+    <button class="btn" onclick="addVoice()">Save brand voice</button>
+  </div>
+  <div class="cards-grid" id="voicesGrid"></div>
+</section>
+
+<section class="page" id="planner">
+  <div class="heading"><h1>Content Planner</h1><p>Organize upcoming content.</p></div>
+  <div class="create-row"><input id="scheduleTitle" placeholder="Content title"><input id="scheduleDate" type="datetime-local"><button class="btn" onclick="addSchedule()">Schedule</button></div>
+  <div class="list" id="scheduleList"></div>
+</section>
+
+<section class="page" id="account">
+  <div class="heading"><h1>Account</h1><p>Sign in to your workspace.</p></div>
+  <div class="auth-box">
+    <h2>Connect your account</h2>
+    <p>Supabase authentication will be enabled after you configure your project credentials.</p>
+    <label>Email</label><input type="email" id="authEmail" placeholder="Your email address">
+    <label>Password</label><input type="password" id="authPassword" placeholder="Your password">
+    <button class="btn" onclick="toast('Configure Supabase to enable account access.')">Continue</button>
+  </div>
+</section>
+
+</div>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEYS = {
+  content:"cf_content",
+  projects:"cf_projects",
+  voices:"cf_voices",
+  schedule:"cf_schedule"
+};
+
+const read = key => {
+  try { return JSON.parse(localStorage.getItem(key)) || []; }
+  catch { return []; }
+};
+const write = (key,data) => localStorage.setItem(key,JSON.stringify(data));
+
+let contents=read(KEYS.content);
+let projects=read(KEYS.projects);
+let voices=read(KEYS.voices);
+let schedules=read(KEYS.schedule);
+
+const $ = id => document.getElementById(id);
+
+function toast(message){
+  const el=$("toast");
+  el.textContent=message;
+  el.classList.add("show");
+  clearTimeout(toast.timer);
+  toast.timer=setTimeout(()=>el.classList.remove("show"),2500);
+}
+
+function safe(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  })[c]);
+}
+
+function navigate(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===page));
+  document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n.dataset.page===page));
+  $("pageName").textContent=page.charAt(0).toUpperCase()+page.slice(1);
+  $("sidebar").classList.remove("open");
+  renderAll();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function toggleSidebar(){
+  $("sidebar").classList.toggle("open");
+}
+
+function showAuth(){
+  navigate("account");
+}
+
+document.querySelectorAll(".nav").forEach(button=>{
+  button.addEventListener("click",()=>navigate(button.dataset.page));
+});
+
+function renderDashboard(){
+  $("totalContent").textContent=contents.length;
+  $("totalProjects").textContent=projects.length;
+  $("totalVoices").textContent=voices.length;
+  $("totalScheduled").textContent=schedules.length;
+
+  const recent=contents.slice(0,4);
+  $("recentContent").innerHTML=recent.length?recent.map(item=>`
+    <div class="item">
+      <div><h4>${safe(item.title)}</h4><p>${safe(item.type)} · ${safe(item.platform)}</p></div>
+      <button class="small" onclick="openContent('${item.id}')">Open</button>
+    </div>`).join(""):'<div class="empty">Your creations will appear here.</div>';
+}
+
+async function generateContent(){
+  const prompt=$("prompt").value.trim();
+  if(!prompt){toast("Enter a topic first.");return;}
+
+  const type=$("contentType").value;
+  const platform=$("platform").value;
+  const tone=$("tone").value;
+
+  $("generateBtn").disabled=true;
+  $("generationStatus").textContent="Preparing draft...";
+
+  // Local demonstration generator. Replace with a secure AI endpoint later.
+  $("output").value=
+`CONTENT TYPE: ${type}
+PLATFORM: ${platform}
+TONE: ${tone}
+
+TOPIC:
+${prompt}
+
+DRAFT
+
+Introduction:
+Introduce the topic clearly and explain why it matters to your audience.
+
+Main message:
+Develop the idea with useful information, practical examples and a clear structure.
+
+Key points:
+• Explain the main idea.
+• Highlight its value.
+• Give relevant examples.
+• Finish with a strong call to action.
+
+Conclusion:
+Deliver a useful and memorable message that encourages your audience to take the next step.
+
+DEMO NOTICE:
+This is a locally generated sample structure, not an OpenAI response.`;
+
+  $("generationStatus").textContent="Demo draft ready";
+  $("generateBtn").disabled=false;
+  updateWords();
+  toast("Draft created.");
+}
+
+function updateWords(){
+  const text=$("output").value.trim();
+  $("wordCount").textContent=(text?text.split(/\s+/).length:0)+" words";
+}
+$("output").addEventListener("input",updateWords);
+
+async function copyOutput(){
+  const text=$("output").value;
+  if(!text.trim()){toast("Nothing to copy.");return;}
+  try{
+    await navigator.clipboard.writeText(text);
+    toast("Copied.");
+  }catch{
+    $("output").select();
+    document.execCommand("copy");
+    toast("Copied.");
+  }
+}
+
+function saveContent(){
+  const text=$("output").value.trim();
+  if(!text){toast("Create content first.");return;}
+
+  contents.unshift({
+    id:crypto.randomUUID(),
+    title:text.split("\n").find(x=>x.trim())||"Untitled",
+    content:text,
+    type:$("contentType").value,
+    platform:$("platform").value,
+    tone:$("tone").value,
+    createdAt:new Date().toISOString()
+  });
+
+  write(KEYS.content,contents);
+  renderAll();
+  toast("Saved to library.");
+}
+
+function renderLibrary(){
+  const search=$("librarySearch").value.toLowerCase();
+  const filtered=contents.filter(item=>
+    `${item.title} ${item.content} ${item.platform}`.toLowerCase().includes(search)
+  );
+
+  $("libraryContent").innerHTML=filtered.length?filtered.map(item=>`
+    <div class="item">
+      <div><h4>${safe(item.title)}</h4><p>${safe(item.type)} · ${safe(item.platform)}</p><p>${safe(item.content.slice(0,140))}</p></div>
+      <div class="actions">
+        <button class="small" onclick="openContent('${item.id}')">Open</button>
+        <button class="small danger" onclick="deleteContent('${item.id}')">Delete</button>
+      </div>
+    </div>`).join(""):'<div class="empty">No matching content found.</div>';
+}
+
+function openContent(id){
+  const item=contents.find(x=>x.id===id);
+  if(!item)return;
+  $("output").value=item.content;
+  $("contentType").value=item.type;
+  $("platform").value=item.platform;
+  $("tone").value=item.tone;
+  updateWords();
+  navigate("studio");
+}
+
+function deleteContent(id){
+  if(!confirm("Delete this content?"))return;
+  contents=contents.filter(x=>x.id!==id);
+  write(KEYS.content,contents);
+  renderAll();
+  toast("Deleted.");
+}
+
+function addProject(){
+  const name=$("projectName").value.trim();
+  if(!name){toast("Enter a project name.");return;}
+  projects.unshift({id:crypto.randomUUID(),name,createdAt:new Date().toISOString()});
+  write(KEYS.projects,projects);
+  $("projectName").value="";
+  renderAll();
+  toast("Project created.");
+}
+
+function renderProjects(){
+  $("projectsGrid").innerHTML=projects.length?projects.map(p=>`
+    <div class="data-card">
+      <h4>${safe(p.name)}</h4>
+      <p>Created ${new Date(p.createdAt).toLocaleDateString()}</p>
+      <div class="card-actions"><button class="small danger" onclick="deleteProject('${p.id}')">Delete</button></div>
+    </div>`).join(""):'<div class="empty">Create your first project.</div>';
+}
+
+function deleteProject(id){
+  if(!confirm("Delete this project?"))return;
+  projects=projects.filter(x=>x.id!==id);
+  write(KEYS.projects,projects);
+  renderAll();
+  toast("Project deleted.");
+}
+
+function addVoice(){
+  const name=$("voiceName").value.trim();
+  const description=$("voiceDescription").value.trim();
+  if(!name||!description){toast("Complete the brand voice details.");return;}
+  voices.unshift({id:crypto.randomUUID(),name,description,tone:$("voiceTone").value});
+  write(KEYS.voices,voices);
+  $("voiceName").value="";
+  $("voiceDescription").value="";
+  renderAll();
+  toast("Brand voice saved.");
+}
+
+function renderVoices(){
+  $("voicesGrid").innerHTML=voices.length?voices.map(v=>`
+    <div class="data-card">
+      <h4>${safe(v.name)}</h4><p>${safe(v.description)}</p><p>Tone: ${safe(v.tone)}</p>
+      <div class="card-actions">
+        <button class="small" onclick="applyVoice('${v.id}')">Use voice</button>
+        <button class="small danger" onclick="deleteVoice('${v.id}')">Delete</button>
+      </div>
+    </div>`).join(""):'<div class="empty">Create your first brand voice.</div>';
+}
+
+function applyVoice(id){
+  const v=voices.find(x=>x.id===id);
+  if(!v)return;
+  $("tone").value=v.tone;
+  $("prompt").value=v.description;
+  navigate("studio");
+  toast("Brand voice applied.");
+}
+
+function deleteVoice(id){
+  if(!confirm("Delete this voice?"))return;
+  voices=voices.filter(x=>x.id!==id);
+  write(KEYS.voices,voices);
+  renderAll();
+}
+
+function addSchedule(){
+  const title=$("scheduleTitle").value.trim();
+  const date=$("scheduleDate").value;
+  if(!title||!date){toast("Enter a title and date.");return;}
+  schedules.push({id:crypto.randomUUID(),title,date});
+  schedules.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  write(KEYS.schedule,schedules);
+  $("scheduleTitle").value="";
+  $("scheduleDate").value="";
+  renderAll();
+  toast("Planner item saved.");
+}
+
+function renderSchedule(){
+  $("scheduleList").innerHTML=schedules.length?schedules.map(s=>`
+    <div class="item">
+      <div><h4>${safe(s.title)}</h4><p>${new Date(s.date).toLocaleString()}</p></div>
+      <button class="small danger" onclick="deleteSchedule('${s.id}')">Remove</button>
+    </div>`).join(""):'<div class="empty">Your planner is empty.</div>';
+}
+
+function deleteSchedule(id){
+  schedules=schedules.filter(x=>x.id!==id);
+  write(KEYS.schedule,schedules);
+  renderAll();
+}
+
+function renderAll(){
+  renderDashboard();
+  renderLibrary();
+  renderProjects();
+  renderVoices();
+  renderSchedule();
+  if(window.lucide)lucide.createIcons();
+}
+
+renderAll();
+</script>
+</body>
+</html>
+```
+
+**Important current limitations:** this one-file version is a local prototype. The AI generator is still a demonstration, and the account screen is not connected to Supabase. To enable real AI generation safely, cloud login and cross-device synchronization, we'll connect the HTML app to a Supabase Edge Function. Never place your private OpenAI API key inside `index.html`.
+
+## Deploying this single file on Render
+
+1. Create a folder called `CONTENTFORGE`.
+2. Save the code above as `index.html`.
+3. Create a Render Static Site.
+4. Upload the project using a Git repository or another supported deployment method.
+5. Set the publish directory to the folder containing `index.html`.
+
+The application can then be opened in a browser and tested.
+
